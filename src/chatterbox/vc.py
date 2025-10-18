@@ -22,13 +22,11 @@ class ChatterboxVC:
         s3gen: S3Gen,
         device: str,
         ref_dict: dict=None,
-        enable_watermark: bool=True,
     ):
         self.sr = S3GEN_SR
         self.s3gen = s3gen
         self.device = device
         self.watermarker = perth.PerthImplicitWatermarker()
-        self.enable_watermark = enable_watermark
         if ref_dict is None:
             self.ref_dict = None
         else:
@@ -86,6 +84,7 @@ class ChatterboxVC:
         self,
         audio,
         target_voice_path=None,
+        enable_watermark:bool=True,
     ):
         if target_voice_path:
             self.set_target_voice(target_voice_path)
@@ -102,6 +101,6 @@ class ChatterboxVC:
                 ref_dict=self.ref_dict,
             )
             output_wav = wav.squeeze(0).detach().cpu().numpy()
-            if self.enable_watermark:
+            if enable_watermark:
                 output_wav = self.watermarker.apply_watermark(wav, sample_rate=self.sr)
         return torch.from_numpy(output_wav).unsqueeze(0)
