@@ -243,6 +243,7 @@ class ChatterboxMultilingualTTS:
         repetition_penalty=2.0,
         min_p=0.05,
         top_p=1.0,
+        enable_watermark:bool=True,
     ):
         # Validate language_id
         if language_id and language_id.lower() not in SUPPORTED_LANGUAGES:
@@ -299,6 +300,6 @@ class ChatterboxMultilingualTTS:
                 ref_dict=self.conds.gen,
             )
             wav = wav.squeeze(0).detach().cpu().numpy()
-            if self.enable_watermark:
+            if enable_watermark:
                 wav = self.watermarker.apply_watermark(wav, sample_rate=self.sr)
         return torch.from_numpy(wav).unsqueeze(0)
