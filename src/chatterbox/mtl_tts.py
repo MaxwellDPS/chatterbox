@@ -142,6 +142,7 @@ class ChatterboxMultilingualTTS:
         tokenizer: MTLTokenizer,
         device: str,
         conds: Conditionals = None,
+        enable_watermark: bool = True,
     ):
         self.sr = S3GEN_SR  # sample rate of synthesized audio
         self.t3 = t3
@@ -151,6 +152,7 @@ class ChatterboxMultilingualTTS:
         self.device = device
         self.conds = conds
         self.watermarker = perth.PerthImplicitWatermarker()
+        self.enable_watermark = enable_watermark
 
     @classmethod
     def get_supported_languages(cls):
@@ -297,5 +299,6 @@ class ChatterboxMultilingualTTS:
                 ref_dict=self.conds.gen,
             )
             wav = wav.squeeze(0).detach().cpu().numpy()
-            watermarked_wav = self.watermarker.apply_watermark(wav, sample_rate=self.sr)
-        return torch.from_numpy(watermarked_wav).unsqueeze(0)
+            if self.enable_watermark:
+                wav = self.watermarker.apply_watermark(wav, sample_rate=self.sr)
+        return torch.from_numpy(wav).unsqueeze(0)
