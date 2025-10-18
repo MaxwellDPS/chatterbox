@@ -19,11 +19,7 @@ dependencies = [
     "resemble-perth",
     "conformer",
     "safetensors",
-    "spacy-pkuseg",
-    "pykakasi",
     "gradio",
-    "russian-text-stresser @ git+https://github.com/Vuizur/add-stress-to-epub",
-
 ]
 
 [project.urls]
